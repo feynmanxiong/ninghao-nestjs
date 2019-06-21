@@ -8,19 +8,19 @@ export class Dogs {
   @Column({ length: 500 })
   name: string;
 
-  @Column('text')
+  @Column('text', { nullable: true})
   description: string;
 
-  @Column()
-  filename: string;
+  // @Column()
+  // filename: string;
 
-  @Column('int')
-  views: number;
+  // @Column('int')
+  // views: number;
 
-  @Column()
-  isPublished: boolean;
+  // @Column()
+  // isPublished: boolean;
 
-  @Column('longtext')
-  body: string;
+  // @Column('longtext')
+  // body: string;
 
 }
