@@ -48,4 +48,8 @@ export class UserService {
 
         return await this.userRepository.save(entity);
     }
+
+    async findByName(name: string) {
+        return await this.userRepository.findOne({name});
+    }
 }

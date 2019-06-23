@@ -1,6 +1,5 @@
 import { Controller, Post, Body, Get, Param, UseInterceptors, ClassSerializerInterceptor, Put} from '@nestjs/common';
 import { UserService } from './user.service';
-import { async } from 'rxjs/internal/scheduler/async';
 import { UserDto, UpdatePasswordDto } from './user.dto';
 
 @Controller('users')
