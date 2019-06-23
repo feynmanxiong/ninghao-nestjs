@@ -1,23 +1,22 @@
 import { Controller, Post, Body, Get, Param, UseInterceptors, ClassSerializerInterceptor, Put} from '@nestjs/common';
 import { UserService } from './user.service';
-import { async } from 'rxjs/internal/scheduler/async';
-import { UserDto, UpdatePasswordDto } from './user.dto';
+import { UserDto, UpdatePasswordDto } from './user.dto ';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
     constructor(
         private readonly userService: UserService
     ){}
 
     @Post()
-    async store(@Body() data: UserDto) {
+    async store(@Body() data: UserDto){
         return await this.userService.store(data);
     }
 
     @Get(':id')
     @UseInterceptors(ClassSerializerInterceptor)
-    async show(@Param('id') id: string) {
-        return  await this.userService.show(id);
+    async show(@Param('id') id: string){
+        return await this.userService.show(id);
     }
 
     @Put(':id/password')

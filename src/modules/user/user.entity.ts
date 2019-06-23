@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 
@@ -8,7 +8,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', {length: 191, unique: true })
+  @Column('varchar', { length: 191, unique: true})
   name: string;
 
   @Column()
@@ -18,17 +18,17 @@ export class User {
   @CreateDateColumn()
   created: Date;
 
-  @CreateDateColumn()
+  @UpdateDateColumn()
   updated: Date;
 
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword(){
-    this.password = await bcrypt.hash(this.password, 12)
+    this.password = await bcrypt.hash(this.password, 12);
   }
 
-  async comparePassword(password: string) {
-      return await bcrypt.compare(password, this.password);
+  async comparePassword(password: string){
+    return await bcrypt.compare(password, this.password);
   }
 
 }
