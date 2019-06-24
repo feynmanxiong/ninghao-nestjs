@@ -2,6 +2,7 @@ import { Controller, Post, Body, Get, Param, UseInterceptors, ClassSerializerInt
 import { UserService } from './user.service';
 import { UserDto, UpdatePasswordDto } from './user.dto ';
 
+
 @Controller('user')
 export class UserController {
     constructor(
