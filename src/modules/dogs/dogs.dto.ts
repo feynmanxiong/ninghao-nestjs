@@ -1,4 +1,4 @@
 export class DogsDto {
-    readonly name: string;
-    readonly description: string;
+    readonly title: string;
+    readonly body: string;
 }

@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../../modules/user/user.service';
 import { LoginDto } from './auth.dto';
 import { JwtPayload } from './auth.interface';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtModule } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +34,7 @@ export class AuthService {
         }
     }
 
-    signToken(data: JwtPayload){
+    signToken(data: JwtModule){
         return this.jwtService.sign(data);
     }
 

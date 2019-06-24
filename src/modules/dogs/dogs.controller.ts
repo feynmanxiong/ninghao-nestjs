@@ -1,7 +1,10 @@
-import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete, UseGuards, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe, Query } from '@nestjs/common';
 import { DogsService } from './dogs.service';
-import { async } from 'rxjs/internal/scheduler/async';
 import { DogsDto } from './dogs.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { User } from '../../core/decorators/user.decorator';
+import { User as UserEntity } from '../user/user.entity';
+import { async } from 'rxjs/internal/scheduler/async';
 
 @Controller('posts')
 export class DogsController {
@@ -10,13 +13,15 @@ export class DogsController {
     ) {}
 
     @Post()
-    async store(@Body() data: DogsDto) {
-        return await this.dogsService.stroe(data);
+    @UseGuards(AuthGuard())
+    async store(@Body() data: DogsDto, @User() user: UserEntity) {
+        return await this.dogsService.stroe(data, user);
     }
 
     @Get()
-    async findAll() {
-        return await this.dogsService.findAll();
+    @UseInterceptors(ClassSerializerInterceptor)
+    async index() {
+        return await this.dogsService.index();
     }
 
     @Get(':id')
@@ -33,4 +38,24 @@ export class DogsController {
     async destroy(@Param('id') id: string) {
         return await this.dogsService.destroy(id);
     }
+
+    @Post(':id/vote')
+    @UseGuards(AuthGuard())
+    async vote(@Param('id', ParseIntPipe) id: number, @User() user: UserEntity){
+        return await this.dogsService.vote(id, user);
+    }
+
+    @Delete(':id/vote')
+    @UseGuards(AuthGuard())
+    async unVote(@Param('id', ParseIntPipe) id: number, @User() user: UserEntity){  
+            return await this.dogsService.unVote(id, user);
+    }
+
+    @Get(':id/liked')
+    @UseInterceptors(ClassSerializerInterceptor)
+    async liked(@Param('id', ParseIntPipe) id: number){
+        return await this.dogsService.liked(id);
+    }
+    
+
 }

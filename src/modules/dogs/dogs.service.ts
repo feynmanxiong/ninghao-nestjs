@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Dogs } from './dogs.entity';
 import { DogsDto } from './dogs.dto';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class DogsService {
@@ -11,18 +12,23 @@ export class DogsService {
         private readonly dogsRepository: Repository<Dogs>,
     ){}
 
-    findAll(): Promise<Dogs[]> {
-        return this.dogsRepository.find();
-    }
+    // findAll(): Promise<Dogs[]> {
+    //     return this.dogsRepository.find();
+    // }
 
-    async stroe(data: DogsDto) {
+    async stroe(data: DogsDto, user: User) {
         const entity = await this.dogsRepository.create(data);
-        await this.dogsRepository.save(entity);
+        await this.dogsRepository.save({
+            ...entity,
+            user
+        });
         return entity;
     }
 
     async index() {
-        const entities = await this.dogsRepository.find();
+        const entities = await this.dogsRepository.find(
+            {relations: ['user']}
+        );
         return entities;
     }
 
@@ -41,4 +47,27 @@ export class DogsService {
         return result;
     }
 
+    async vote(id: number, user: User){
+        await this.dogsRepository
+            .createQueryBuilder()
+            .relation(User, 'voted')
+            .of(user)
+            .add(id);
+    }
+
+    async unVote(id: number, user: User){
+        await this.dogsRepository
+            .createQueryBuilder()
+            .relation(User, 'voted')
+            .of(user)
+            .remove({ id });
+    }
+
+    async liked(id: number){
+        return await this.dogsRepository
+            .createQueryBuilder()
+            .relation(Dogs, 'liked')
+            .of(id)
+            .loadMany();
+    }
 }

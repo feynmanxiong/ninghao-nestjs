@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn,  ManyToOne, CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
+import { User } from '../user/user.entity';
 
 
 @Entity()
@@ -6,22 +7,23 @@ export class Dogs {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 500 })
-  name: string;
+  @Column()
+  title: string;
 
-  @Column('text', { nullable: true})
-  description: string;
+  @Column('longtext', { nullable: true})
+  body: string;
 
-  // @Column()
-  // filename: string;
+  @CreateDateColumn()
+  created: Date;
 
-  // @Column('int')
-  // views: number;
+  @UpdateDateColumn()
+  updated: Date;
 
-  // @Column()
-  // isPublished: boolean;
+  @ManyToOne(type => User, user => user.dog)
+  user: User;
 
-  // @Column('longtext')
-  // body: string;
+  @ManyToMany(type => User, user => user.voted)
+  liked: User[];
+
 
 }

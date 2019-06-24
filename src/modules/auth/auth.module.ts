@@ -7,18 +7,20 @@ import { UserModule } from '../user/user.module';
 import { jwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
-  imports: [UserModule, JwtModule.register({
-    secretOrPrivateKey: 'qHqPHVPasjfHDCrcX7Ao7x505W098RU3i6lloVgWZFY=',
-    signOptions: {
-      expiresIn: '12h'
-    }
+  imports: [
+    UserModule,
+    JwtModule.register({
+      secretOrPrivateKey: 'qHqPHVPasjfHDCrcX7Ao7x505W098RU3i6lloVgWZFY=',
+      signOptions: {
+        expiresIn: '12h'
+      }
     }),
     PassportModule.register({
       defaultStrategy: 'jwt'
-    }   
-    )
+    })
   ],
   controllers: [AuthController],
-  providers: [AuthService, jwtStrategy]
+  providers: [AuthService, jwtStrategy],
+  exports: [PassportModule]
 })
-export class AuthModule {}
+export class AuthModule { }
