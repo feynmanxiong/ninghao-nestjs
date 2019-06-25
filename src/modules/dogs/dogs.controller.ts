@@ -4,7 +4,8 @@ import { DogsDto } from './dogs.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../../core/decorators/user.decorator';
 import { User as UserEntity } from '../user/user.entity';
-import { async } from 'rxjs/internal/scheduler/async';
+import { ListOptions } from '../../core/decorators/list-options.decorator';
+import { ListOpitonInterface } from '../../core/interfaces/list-opiton.interface';
 
 @Controller('posts')
 export class DogsController {
@@ -20,8 +21,10 @@ export class DogsController {
 
     @Get()
     @UseInterceptors(ClassSerializerInterceptor)
-    async index() {
-        return await this.dogsService.index();
+    async index(
+        @ListOptions() options: ListOpitonInterface
+    ) {
+        return await this.dogsService.index(options);
     }
 
     @Get(':id')

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Dogs } from './dogs.entity';
 import { DogsDto } from './dogs.dto';
 import { User } from '../user/user.entity';
+import { ListOpitonInterface } from '../../core/interfaces/list-opiton.interface';
 
 @Injectable()
 export class DogsService {
@@ -25,11 +26,19 @@ export class DogsService {
         return entity;
     }
 
-    async index() {
-        const entities = await this.dogsRepository.find(
-            {relations: ['user']}
-        );
-        return entities;
+    async index(options: ListOpitonInterface) {
+        const {categories} = options;
+        const queryBuilder = await this.dogsRepository.createQueryBuilder('dogs');
+
+        queryBuilder.leftJoinAndSelect('dogs.user', 'user');
+        queryBuilder.leftJoinAndSelect('dogs.category', 'category');
+
+        if (categories) {
+            queryBuilder.where('category.alias in (:...categories)', {categories});
+        }
+
+        const entites = queryBuilder.getMany();
+        return entites;
     }
 
     async show(id: string) {

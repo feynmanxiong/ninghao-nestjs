@@ -6,6 +6,7 @@ import { Connection } from 'typeorm';
 import { DogsModule } from './modules/dogs/dogs.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { AuthModule } from './modules/auth/auth.module';
     }),
     DogsModule,
     UserModule,
-    AuthModule],
+    AuthModule,
+    CategoryModule],
   controllers: [AppController],
   providers: [AppService],
 })
