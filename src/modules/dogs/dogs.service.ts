@@ -5,19 +5,50 @@ import { Dogs } from './dogs.entity';
 import { DogsDto } from './dogs.dto';
 import { User } from '../user/user.entity';
 import { ListOpitonInterface } from '../../core/interfaces/list-opiton.interface';
+import { Tag } from '../tag/tag.entity';
 
 @Injectable()
 export class DogsService {
     constructor(
         @InjectRepository(Dogs)
         private readonly dogsRepository: Repository<Dogs>,
+
+        @InjectRepository(Tag)
+        private readonly tagRepository: Repository<Tag>
     ){}
 
-    // findAll(): Promise<Dogs[]> {
-    //     return this.dogsRepository.find();
-    // }
+    async beforeTag(tags: Partial<Tag>[]){
+        const _tags = tags.map(async item => {
+            const {id, name} = item;
+            if(id) {
+                const _tag =await this.tagRepository.findOne(id);               
+                if(_tag) {
+                    return _tag;
+                }
+                return;
+            }
+            if(name) {
+                const _tag = await this.tagRepository.findOne({name});
+                if(_tag) {
+                    return _tag;
+                }
+                return await this.tagRepository.save(item);
+            }
+        });
+        return  Promise.all(_tags);
+    }
+
+
 
     async stroe(data: DogsDto, user: User) {
+        const { tags } = data;
+        console.log(tags);
+
+        if(tags) {
+            data.tags = await this.beforeTag(tags);
+        }
+
+
         const entity = await this.dogsRepository.create(data);
         await this.dogsRepository.save({
             ...entity,
@@ -27,16 +58,19 @@ export class DogsService {
     }
 
     async index(options: ListOpitonInterface) {
-        const {categories} = options;
+        const {categories, tags} = options;
         const queryBuilder = await this.dogsRepository.createQueryBuilder('dogs');
 
         queryBuilder.leftJoinAndSelect('dogs.user', 'user');
         queryBuilder.leftJoinAndSelect('dogs.category', 'category');
+        queryBuilder.leftJoinAndSelect('dogs.tags', 'tag');
 
         if (categories) {
             queryBuilder.where('category.alias in (:...categories)', {categories});
         }
-
+        if (tags){
+            queryBuilder.andWhere('tag.name IN (:...tags)', {tags});
+        }
         const entites = queryBuilder.getMany();
         return entites;
     }
@@ -47,8 +81,17 @@ export class DogsService {
     }
 
     async update(id: string, data: Partial<DogsDto>) {
-        const result = await this.dogsRepository.update(id, data);
-        return result;
+
+        const { tags } = data;
+        delete data.tags;
+
+        await this.dogsRepository.update(id, data);
+        const entity = await this.dogsRepository
+            .findOne(id, {relations: ['category', 'tags']});
+        if (tags) {
+            entity.tags = await this.beforeTag(tags);
+        }
+        return await this.dogsRepository.save(entity);
     }
 
     async destroy(id: string) {

@@ -7,6 +7,7 @@ import { DogsModule } from './modules/dogs/dogs.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CategoryModule } from './modules/category/category.module';
+import { TagModule } from './modules/tag/tag.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { CategoryModule } from './modules/category/category.module';
     DogsModule,
     UserModule,
     AuthModule,
-    CategoryModule],
+    CategoryModule,
+    TagModule],
   controllers: [AppController],
   providers: [AppService],
 })

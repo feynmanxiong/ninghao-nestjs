@@ -5,11 +5,12 @@ import { DogsService } from './dogs.service';
 import { Dogs } from './dogs.entity';
 import { AuthModule } from '../auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
+import { Tag } from '../tag/tag.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Dogs]),
-    // AuthModule
+    TypeOrmModule.forFeature([Dogs, Tag]),
+    AuthModule,
     PassportModule.register({
       defaultStrategy: 'jwt'
     }   

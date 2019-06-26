@@ -13,5 +13,5 @@ export class Category {
     alias: string;
 
     @OneToMany(type => Dogs, dogs => dogs.category)
-    dog: Dogs[]
+    dog: Dogs[];
 }
