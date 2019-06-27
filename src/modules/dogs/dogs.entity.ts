@@ -1,7 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn,  ManyToOne, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn,  ManyToOne, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Category } from '../category/category.entity';
 import { Tag } from '../tag/tag.entity';
+import { Comment } from '../comment/comment.entity';
+
 
 
 @Entity()
@@ -33,5 +35,8 @@ export class Dogs {
   @ManyToMany(type => Tag, tags => tags.dogs)
   @JoinTable()
   tags: Tag[];
+
+  @OneToMany(type => Comment, comment => comment.dogs )
+  comments: Comment[];
 
 }

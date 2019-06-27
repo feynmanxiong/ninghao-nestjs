@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { Dogs } from '../dogs/dogs.entity';
+import { Comment } from '../comment/comment.entity';
 
 
 @Entity()
@@ -12,7 +13,7 @@ export class User {
   @Column('varchar', { length: 191, unique: true})
   name: string;
 
-  @Column()
+  @Column({ select: false })
   @Exclude()
   password: string;
 
@@ -29,6 +30,9 @@ export class User {
   @JoinTable()
   voted: Dogs[]
 
+  @OneToMany(type => Comment, comment => comment.user )
+  comments: Comment[];
+
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword(){
@@ -38,5 +42,7 @@ export class User {
   async comparePassword(password: string){
     return await bcrypt.compare(password, this.password);
   }
+
+
 
 }
