@@ -58,7 +58,7 @@ export class DogsService {
     }
 
     async index(options: ListOpitonInterface) {
-        const {categories, tags} = options;
+        const {categories, tags, page, limit, sort, order} = options;
         const queryBuilder = await this.dogsRepository.createQueryBuilder('dogs');
 
         queryBuilder.leftJoinAndSelect('dogs.user', 'user');
@@ -71,7 +71,13 @@ export class DogsService {
         if (tags){
             queryBuilder.andWhere('tag.name IN (:...tags)', {tags});
         }
-        const entites = queryBuilder.getMany();
+
+        queryBuilder.take(limit).skip(limit*(page-1));
+        queryBuilder.orderBy({
+            [`dogs.${sort}`]: order
+        })
+
+        const entites = queryBuilder.getManyAndCount();
         return entites;
     }
 

@@ -6,6 +6,7 @@ import { User } from '../../core/decorators/user.decorator';
 import { User as UserEntity } from '../user/user.entity';
 import { ListOptions } from '../../core/decorators/list-options.decorator';
 import { ListOpitonInterface } from '../../core/interfaces/list-opiton.interface';
+import { TransformInterceptor } from '../../interceptors/transform.interceptor';
 
 @Controller('posts')
 export class DogsController {
@@ -20,9 +21,9 @@ export class DogsController {
     }
 
     @Get()
-    @UseInterceptors(ClassSerializerInterceptor)
+    @UseInterceptors(ClassSerializerInterceptor, TransformInterceptor)
     async index(
-        @ListOptions() options: ListOpitonInterface
+        @ListOptions({ limit: 10, sort: 'id', order: 'DESC'}) options: ListOpitonInterface
     ) {
         return await this.dogsService.index(options);
     }
