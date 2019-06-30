@@ -7,6 +7,10 @@ import { User as UserEntity } from '../user/user.entity';
 import { ListOptions } from '../../core/decorators/list-options.decorator';
 import { ListOpitonInterface } from '../../core/interfaces/list-opiton.interface';
 import { TransformInterceptor } from '../../interceptors/transform.interceptor';
+import { Permissions } from '../../core/decorators/permissions.decorator';
+import { Resource } from '../../core/interfaces/enums/resource.enum';
+import { Possession } from '../../core/interfaces/enums/possession.enum';
+import { AccessGuard } from '../../core/guards/access.guard'
 
 @Controller('posts')
 export class DogsController {
@@ -34,6 +38,8 @@ export class DogsController {
     }
 
     @Put(':id')
+    @UseGuards(AuthGuard(), AccessGuard)
+    @Permissions({resource: Resource.DOG, possesion: Possession.OWN})
     async update(@Param('id') id: string, @Body() data: Partial<DogsDto>) {
         return await this.dogsService.update(id, data);
     }
